@@ -33,8 +33,13 @@ public class StudentService {
 		existingStudent.setAge(updatedStudent.getAge());
 		existingStudent.setEmail(updatedStudent.getEmail());
 		
-		return studentRepository.save(existingStudent);
-		
+		return studentRepository.save(existingStudent);	
+	}
+	
+	public void deleteStudent(Long id) {
+		Student student = studentRepository.findById(id)
+				.orElseThrow(()-> new RuntimeException("Student not found with id: " + id));
+		studentRepository.delete(student);
 	}
 	
 	

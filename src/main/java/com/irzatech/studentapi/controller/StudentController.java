@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.irzatech.studentapi.model.Student;
 import com.irzatech.studentapi.service.StudentService;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +40,14 @@ public class StudentController {
 	public ResponseEntity<Student> updateStudent(@PathVariable Long id, @RequestBody Student updatedStudent){
 		Student student = studentService.updateStudent(id, updatedStudent);
 		return ResponseEntity.ok(student);
+	}
+	
+//	Delete Student record
+	@DeleteMapping("/{id}")
+	public ResponseEntity<String> deleteStudenty(@PathVariable Long id, @RequestBody Student deleteStudent){
+		studentService.deleteStudent(id);
+		return ResponseEntity.ok("Student deleted successfully.");
+	
 	}
 	
 	
