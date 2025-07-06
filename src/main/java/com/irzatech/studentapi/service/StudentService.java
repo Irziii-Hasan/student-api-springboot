@@ -42,5 +42,27 @@ public class StudentService {
 		studentRepository.delete(student);
 	}
 	
+	public Student patchStudent(Long id, Student updateData) {
+		Student existingStudent = studentRepository
+				.findById(id).orElseThrow(()-> new RuntimeException("Student not found with id= "+id));
+		
+//		update student name if not empty
+		if(updateData.getName() != null) {
+			existingStudent.setName(updateData.getName());
+		}
+		
+//		update student email if not empty
+		if(updateData.getEmail() != null) {
+			existingStudent.setEmail(updateData.getEmail());
+		}
+		
+//		update student age if not 0
+		if(updateData.getAge() != 0) {
+			existingStudent.setAge(updateData.getAge());
+		}
+		
+		return studentRepository.save(existingStudent);
+	}
+	
 	
 }

@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.irzatech.studentapi.model.Student;
 import com.irzatech.studentapi.service.StudentService;
 
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/students")
 public class StudentController {
+
 	private final StudentService studentService;
 	
 //	Constructor Injection
@@ -50,5 +50,11 @@ public class StudentController {
 	
 	}
 	
+	@PatchMapping("/{id}")
+	public ResponseEntity<Student> patchStudent(@PathVariable Long id, @RequestBody Student updateStudent){
+		Student student = studentService.patchStudent(id, updateStudent);
+		return ResponseEntity.ok(student);
+		
+	}
 	
 }
