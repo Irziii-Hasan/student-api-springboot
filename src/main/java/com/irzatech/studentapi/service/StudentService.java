@@ -61,6 +61,18 @@ public class StudentService {
 			existingStudent.setAge(updateData.getAge());
 		}
 		
+		if (updateData.getDepartment() != null && !updateData.getDepartment().isBlank()) {
+	        existingStudent.setDepartment(updateData.getDepartment());
+	    }
+
+	    if (updateData.getRollNumber() != null && !updateData.getRollNumber().isBlank()) {
+	        existingStudent.setRollNumber(updateData.getRollNumber());
+	    }
+
+	    if (updateData.getGender() != null && !updateData.getGender().isBlank()) {
+	        existingStudent.setGender(updateData.getGender());
+	    }
+		
 		return studentRepository.save(existingStudent);
 	}
 	
