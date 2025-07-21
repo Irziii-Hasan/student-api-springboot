@@ -4,36 +4,47 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.irzatech.studentapi.dto.StudentRequestDTO;
+import com.irzatech.studentapi.dto.StudentResponseDTO;
+//import com.irzatech.studentapi.dto.StudentRequestDTO;
+//import com.irzatech.studentapi.dto.StudentResponseDTO;
 import com.irzatech.studentapi.model.Student;
 import com.irzatech.studentapi.repository.StudentRepository;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Service
 public class StudentService {
 	public final StudentRepository studentRepository;
 	
-//	@RequiredArgsConstructor (for auto-generate constructor we use this annotation)
-	public StudentService(StudentRepository studentRepository) {
-		this.studentRepository = studentRepository;
+	public List<StudentResponseDTO> getAllStudents(){
+		List<Student> student = studentRepository.findAll();
+		return student.stream()
+			.map(this :: entityToDto)
+			.toList();
 	}
 	
-	public List<Student> getAllStudents(){
-		return studentRepository.findAll();
+	public StudentResponseDTO saveStudent(StudentRequestDTO dto) {
+		Student student = dtoToEntity(dto);
+		Student savedStudent = studentRepository.save(student);
+		return entityToDto(savedStudent);
 	}
-	
-	public Student saveStudent(Student student) {
-		return studentRepository.save(student);
-	}
-	
-	public Student updateStudent(Long id, Student updatedStudent) {
-		Student existingStudent = studentRepository
+		
+	public StudentResponseDTO updateStudent(Long id, StudentRequestDTO dto) {
+		Student student = studentRepository
 				.findById(id).orElseThrow(()->new RuntimeException("Student not found with id= "+id));
 		
 //		update values
-		existingStudent.setName(updatedStudent.getName());
-		existingStudent.setAge(updatedStudent.getAge());
-		existingStudent.setEmail(updatedStudent.getEmail());
-		
-		return studentRepository.save(existingStudent);	
+		student.setName(dto.getFullName());
+		student.setAge(dto.getAge());
+		student.setEmail(dto.getEmail());
+		student.setDepartment(dto.getDepartment());
+	    student.setRollNumber(dto.getRollNumber());
+	    student.setGender(dto.getGender());
+	    
+		Student updatedStudent = studentRepository.save(student);	
+		return entityToDto(updatedStudent);
 	}
 	
 	public void deleteStudent(Long id) {
@@ -42,39 +53,64 @@ public class StudentService {
 		studentRepository.delete(student);
 	}
 	
-	public Student patchStudent(Long id, Student updateData) {
-		Student existingStudent = studentRepository
+	public StudentResponseDTO patchStudent(Long id, StudentRequestDTO dto) {
+		Student student = studentRepository
 				.findById(id).orElseThrow(()-> new RuntimeException("Student not found with id= "+id));
 		
 //		update student name if not empty
-		if(updateData.getName() != null) {
-			existingStudent.setName(updateData.getName());
+		if(dto.getFullName() != null) {
+			student.setName(dto.getFullName());
 		}
 		
 //		update student email if not empty
-		if(updateData.getEmail() != null) {
-			existingStudent.setEmail(updateData.getEmail());
+		if(dto.getEmail() != null) {
+			student.setEmail(dto.getEmail());
 		}
 		
 //		update student age if not 0
-		if(updateData.getAge() != 0) {
-			existingStudent.setAge(updateData.getAge());
+		if(dto.getAge() != 0) {
+			student.setAge(dto.getAge());
 		}
 		
-		if (updateData.getDepartment() != null && !updateData.getDepartment().isBlank()) {
-	        existingStudent.setDepartment(updateData.getDepartment());
+		if (dto.getDepartment() != null && !dto.getDepartment().isBlank()) {
+	        student.setDepartment(dto.getDepartment());
 	    }
 
-	    if (updateData.getRollNumber() != null && !updateData.getRollNumber().isBlank()) {
-	        existingStudent.setRollNumber(updateData.getRollNumber());
+	    if (dto.getRollNumber() != null && !dto.getRollNumber().isBlank()) {
+	        student.setRollNumber(dto.getRollNumber());
 	    }
 
-	    if (updateData.getGender() != null && !updateData.getGender().isBlank()) {
-	        existingStudent.setGender(updateData.getGender());
+	    if (dto.getGender() != null && !dto.getGender().isBlank()) {
+	        student.setGender(dto.getGender());
 	    }
 		
-		return studentRepository.save(existingStudent);
+		Student updatedStudent = studentRepository.save(student);
+		return entityToDto(updatedStudent);
 	}
 	
+	
+	
+	private Student dtoToEntity(StudentRequestDTO dto) {
+		return Student.builder()
+				.name(dto.getFullName())
+				.age(dto.getAge())
+				.department(dto.getDepartment())
+				.email(dto.getEmail())
+				.gender(dto.getGender())
+				.rollNumber(dto.getRollNumber())
+				.build();
+	}
+	
+	private StudentResponseDTO entityToDto(Student student) {
+		StudentResponseDTO dto = new StudentResponseDTO();
+	    dto.setId(student.getId());
+		dto.setFullName(student.getName());
+		dto.setAge(student.getAge());
+		dto.setDepartment(student.getDepartment());
+		dto.setEmail(student.getEmail());
+		dto.setGender(student.getGender());
+		dto.setRollNumber(student.getRollNumber());
+		return dto;
+	}
 	
 }

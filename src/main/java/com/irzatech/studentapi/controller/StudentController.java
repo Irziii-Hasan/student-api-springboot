@@ -6,6 +6,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.irzatech.studentapi.dto.StudentRequestDTO;
+import com.irzatech.studentapi.dto.StudentResponseDTO;
+//import com.irzatech.studentapi.dto.StudentRequestDTO;
+//import com.irzatech.studentapi.dto.StudentResponseDTO;
 import com.irzatech.studentapi.model.Student;
 import com.irzatech.studentapi.service.StudentService;
 
@@ -27,36 +32,39 @@ public class StudentController {
 	
 //	StudentController
 	@GetMapping
-	public List<Student> getAllStudents(){
+	public List<StudentResponseDTO> getAllStudents(){
 		return studentService.getAllStudents();
 	}
 	
 //  POST create a new student
 	@PostMapping
-	public Student createStudent(@Valid @RequestBody Student student) {
-		return studentService.saveStudent(student);
+	public ResponseEntity<StudentResponseDTO> createStudent(@Valid @RequestBody StudentRequestDTO studentRequestDTO) {
+		StudentResponseDTO studentResponseDTO =  studentService.saveStudent(studentRequestDTO);
+		return ResponseEntity.ok(studentResponseDTO);
 	}
 	
 //	PUT update Student values
 	@PutMapping("/{id}")
-	public ResponseEntity<Student> updateStudent(@PathVariable Long id, @Valid @RequestBody Student updatedStudent){
-		Student student = studentService.updateStudent(id, updatedStudent);
+	public ResponseEntity<StudentResponseDTO> updateStudent(@PathVariable Long id, @Valid @RequestBody StudentRequestDTO dto){
+		StudentResponseDTO student = studentService.updateStudent(id, dto);
 		return ResponseEntity.ok(student);
 	}
 	
 //	Delete Student record
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> deleteStudenty(@PathVariable Long id, @RequestBody Student deleteStudent){
+	public ResponseEntity<String> deleteStudent(@PathVariable Long id, @RequestBody Student deleteStudent){
 		studentService.deleteStudent(id);
 		return ResponseEntity.ok("Student deleted successfully.");
 	
 	}
 	
 	@PatchMapping("/{id}")
-	public ResponseEntity<Student> patchStudent(@PathVariable Long id, @RequestBody Student updateStudent){
-		Student student = studentService.patchStudent(id, updateStudent);
-		return ResponseEntity.ok(student);
-		
+	public ResponseEntity<StudentResponseDTO> patchStudent(
+	        @PathVariable Long id,
+	        @RequestBody StudentRequestDTO dto) {
+	    StudentResponseDTO student = studentService.patchStudent(id, dto);
+	    return ResponseEntity.ok(student);
 	}
+
 	
 }
