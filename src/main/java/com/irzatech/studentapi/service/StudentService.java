@@ -4,10 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.irzatech.studentapi.dto.StudentMapper;
 import com.irzatech.studentapi.dto.StudentRequestDTO;
 import com.irzatech.studentapi.dto.StudentResponseDTO;
-//import com.irzatech.studentapi.dto.StudentRequestDTO;
-//import com.irzatech.studentapi.dto.StudentResponseDTO;
 import com.irzatech.studentapi.model.Student;
 import com.irzatech.studentapi.repository.StudentRepository;
 
@@ -21,14 +20,14 @@ public class StudentService {
 	public List<StudentResponseDTO> getAllStudents(){
 		List<Student> student = studentRepository.findAll();
 		return student.stream()
-			.map(this :: entityToDto)
+			.map(StudentMapper :: entityToDto)
 			.toList();
 	}
 	
 	public StudentResponseDTO saveStudent(StudentRequestDTO dto) {
-		Student student = dtoToEntity(dto);
+		Student student = StudentMapper.dtoToEntity(dto);
 		Student savedStudent = studentRepository.save(student);
-		return entityToDto(savedStudent);
+		return StudentMapper.entityToDto(savedStudent);
 	}
 		
 	public StudentResponseDTO updateStudent(Long id, StudentRequestDTO dto) {
@@ -44,7 +43,7 @@ public class StudentService {
 	    student.setGender(dto.getGender());
 	    
 		Student updatedStudent = studentRepository.save(student);	
-		return entityToDto(updatedStudent);
+		return StudentMapper.entityToDto(updatedStudent);
 	}
 	
 	public void deleteStudent(Long id) {
@@ -85,32 +84,10 @@ public class StudentService {
 	    }
 		
 		Student updatedStudent = studentRepository.save(student);
-		return entityToDto(updatedStudent);
+		return StudentMapper.entityToDto(updatedStudent);
 	}
 	
 	
 	
-	private Student dtoToEntity(StudentRequestDTO dto) {
-		return Student.builder()
-				.name(dto.getFullName())
-				.age(dto.getAge())
-				.department(dto.getDepartment())
-				.email(dto.getEmail())
-				.gender(dto.getGender())
-				.rollNumber(dto.getRollNumber())
-				.build();
-	}
-	
-	private StudentResponseDTO entityToDto(Student student) {
-		StudentResponseDTO dto = new StudentResponseDTO();
-	    dto.setId(student.getId());
-		dto.setFullName(student.getName());
-		dto.setAge(student.getAge());
-		dto.setDepartment(student.getDepartment());
-		dto.setEmail(student.getEmail());
-		dto.setGender(student.getGender());
-		dto.setRollNumber(student.getRollNumber());
-		return dto;
-	}
 	
 }
