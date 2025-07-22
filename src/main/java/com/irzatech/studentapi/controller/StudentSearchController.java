@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.irzatech.studentapi.dto.StudentResponseDTO;
 import com.irzatech.studentapi.service.StudentSearchService;
 
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
